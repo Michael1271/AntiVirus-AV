@@ -166,9 +166,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [Michael](https://twitter.com/your_username) - michaelkhosh@gmail.com
+Your Name - [Michael] - michaelkhosh@gmail.com
 
-Project Link: [https://github.com/Michael1271/AntiVirus-AV]
+Project Link: [AntiVirus-AV](https://github.com/Michael1271/AntiVirus-AV)
 
 
 
