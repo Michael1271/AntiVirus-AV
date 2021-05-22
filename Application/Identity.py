@@ -317,18 +317,24 @@ def shred(mode='Basic', path=''):
     elif path == 'Temporary Files':
         directory_path = r'c:\windows\temp'
         object_list = os.listdir(directory_path)
+        files_list = []
         if object_list:
+            while object_list:
+                for file in object_list:
+                    file_path = directory_path + file
+                    if file_path not in files_list:
+                        files_list.append(file_path)
+                    object_list.remove(file)
             print(f'Starting Shredding process at {path}\n')
             executed = True
-            print(f'We are getting ready to shred {len(object_list)} files')
+            print(f'We are getting ready to shred {len(files_list)} files')
             time.sleep(1)
-            for index, file_path in enumerate(object_list):
-                if index == (len(object_list) - 1):  # last file
+            for index, file_path in enumerate(files_list):
+                if (index + 1) == len(object_list):  # last file
                     sys.stdout.write(
-                        f'\rShredding ({int((index / len(object_list) - 1) * 100)}%): {basename(file_path)}last')
+                        f'\rShredding ({int((index / len(files_list)) * 100)}%): {basename(file_path)}last')
                 else:
-                    sys.stdout.write(
-                        f'\rShredding ({int((index / len(object_list) - 1) * 100)}%): {basename(file_path)}')
+                    sys.stdout.write(f'\rShredding ({int((index / len(files_list)) * 100)}%): {basename(file_path)}')
                 for _ in range(repeat):
                     try:
                         if not os.path.isdir(file_path):  # is file
@@ -337,21 +343,20 @@ def shred(mode='Basic', path=''):
                                 failed_shredding.append(file_path)
                     except:
                         pass
+
+            for file in files_list:
+                os.remove(file)
             process = subprocess.Popen('del /S /Q /F %s\\*.*' % directory_path, shell=True, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE)  # deleting all temporary files
             process.communicate()
-            for file in object_list:
-                os.remove(file)
-
             finish_time = time.perf_counter()
             print('\n\nShredding Report:')
-            print(f'Successfully shredded: {len(object_list) - len(failed_shredding)} '
-                  f'out of {len(object_list)} Files || Failed to shred : '
-                  f'{len(failed_shredding)} files. Deleted: {len(object_list)}')
+            print(f'Successfully shredded: {len(files_list) - len(failed_shredding)} '
+                  f'out of {len(files_list)} Files || Failed to shred : '
+                  f'{len(failed_shredding)} files. Deleted: {len(files_list)}')
 
     if executed:
-        print(
-            f'Shredding has been finished in {progress_duration(finish_time - start_time)}')
+        print(f'Shredding has been finished in {progress_duration(finish_time - start_time)}')
         from Graphic_Interface import display_notifications
         display_notifications('Shredding process has finished.')
     else:
@@ -361,7 +366,8 @@ def shred(mode='Basic', path=''):
 
 def shred_file(file):
     """
-    An auxiliary function that shreds the given file.
+    An auxiliary function that shreds the given file by writing random bytes to it
+    and hence making it harder to recover the file.
     :param file: the given file's path to be shred
     :return: True/False if the process was successful
     :rtype: bool
@@ -369,9 +375,8 @@ def shred_file(file):
     try:
         with open(file, 'wb') as file:
             file.truncate(0)
-            for i in range(random.randint(99999, 999999)):
-                file.write(base64.b64encode(bytes(f'{i} \n',
-                                                  'ascii')))  # writing random bytes on the file in order to make it harder to recover it
+            [file.write(base64.b64encode(bytes(f'{i} \n', 'ascii'))) for i in range(random.randint(99999,
+                                                                                                   999999))]  # writing random bytes on the file in order to make it harder to recover it
         return True
     except Exception as e:
         print(f'Cannot open the file {file}. The error {e} occurred')
