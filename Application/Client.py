@@ -90,10 +90,14 @@ def get_active_clients():
         client, 'get_active_clients'.encode(ENCODING_FORMAT))
     response = receive_server_response(client).decode(ENCODING_FORMAT)
     if response != '':
+        lst = []
+        index = response.find('end', 1)
+        lst.append(response[:index])
+        lst.append(response[index + 3: -3])
         string = ''
-        for connection in response.split('\n'):
+        for connection in lst:
             if connection != '':
-                string += f"""IP Address: {response} || Mac Address: {encrypt_to_hash(get_mac_address(ip=str(connection[:connection.find(':')]), network_request=True))} || Status: Online\n"""
+                string += f"""IP Address: {connection} || Mac Address: {encrypt_to_hash(get_mac_address(ip=str(connection[:connection.find(':')]), network_request=True))} || Status: Online\n"""
     else:
         string = f'Could not analyze active clients.'
     return string
