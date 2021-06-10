@@ -111,11 +111,9 @@ def send_active_clients():
 
     global clients
     if clients:
-        index = 0
         response = ''
         for client in clients:
-            index += 1
-            response += f"{client[1]}:{str(client[2])}end"
+            response += f"{client[1]}:{str(client[2])}~"
     else:
         response = 'There are no active clients right now.'
     return response
