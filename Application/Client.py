@@ -6,6 +6,9 @@ from Cryptography import encrypt_to_hash
 from Graphic_Interface import get_server_details_screen
 from Secret_Variables import Software_Activation_Key
 
+# A client socket program
+__author__ = 'Michael Khoshahang'
+
 # Global Variables-
 MSG_LENGTH = 2048
 get_server_details_screen()

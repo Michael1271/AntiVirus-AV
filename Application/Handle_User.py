@@ -1,5 +1,6 @@
 import json
 import re
+import ssl
 import time
 from tkinter import *
 from pymongo import MongoClient
@@ -116,7 +117,7 @@ def connect_to_db():
     """
 
     print('Connecting to MongoDB DataBase...')
-    return MongoClient(DataBaseAccess)
+    return MongoClient(DataBaseAccess, ssl_cert_reqs=ssl.CERT_NONE)
 
 
 database = connect_to_db().Users.UsersDataBase  # Connecting to the database
